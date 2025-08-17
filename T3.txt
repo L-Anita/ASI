@@ -1,0 +1,23 @@
+CHIP Mux {
+    IN x, y, z;
+    OUT f1, f2;
+
+    PARTS:
+    /*Sintetize los NOT con una N*/
+    Not(in=x, out=Nx);
+    Not(in=y, out=Ny);
+    Not(in=z, out=Nz);
+
+    //Primer ecuacion
+    And(a=x, b=Ny, out=xNy);
+    /*En los OR use una O para no perderme*/
+    Or(a=Nx, b=xNy, out=NxOxNy); 
+    And(a=Nz, b=NxOxNy, out=f1);
+
+    //Segunda ecuación
+    And(a=Nx, b=Ny, out=NxNy);
+    And(a=z, b=NxNy, out=NxNyz);
+    Or(a=x, b=Nz, out=xONz);
+    And(a=y, b=xONz, out=yOxNz);
+    Or(a=yOxNz, b=NxNyz, out=f2);
+}
