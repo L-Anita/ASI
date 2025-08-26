@@ -1,0 +1,14 @@
+CHIP Mux {
+    //Simulación de Multiplexor
+    IN a, b, sel;
+    OUT Out;
+
+    PARTS:
+    
+    /*Utilice a y b para tener las mismas variables a la tabla de verdad
+    q hicimos en clase c: */
+    Not(in=sel, out=Nsel);
+    And(a=a, b=Nsel, out=aNsel);
+    And(a=b, b=sel, out=bsel);
+    Or(a=aNsel, b=bsel, out=Out);
+}

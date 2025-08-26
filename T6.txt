@@ -1,0 +1,11 @@
+CHIP DMux {
+    //Simulación de demultiplexor
+    IN in, sel;
+    OUT Out1, Out2;
+
+    PARTS:
+    Not(in=sel, out=Nsel);
+    And(a=Nsel, b=in, out=Out1);
+
+    And(a=sel, b=in, out=Out2);
+}

@@ -1,0 +1,21 @@
+CHIP Mux {
+    /*Compuertas NOT, AND y OR por medio de NAND*/
+    IN x, y, z;
+    OUT NOT, AND, OR;
+
+    PARTS:
+    //NOT
+    Nand(a=z, b=z, out= NOT);
+
+    //AND
+    Nand(a=x, b=y, out=Nxy);
+    Nand(a=Nxy, b=Nxy, out=AND);
+
+    //OR
+    Nand(a=x, b=x, out= NOTx);
+    Nand(a=y, b=y, out=NOTy);
+    Nand(a=NOTx, b=NOTy, out=NxNy);
+    Nand(a=NxNy, b=NxNy, out=NotNxNy);
+    Nand(a=NotNxNy, b=NotNxNy, out=OR);
+
+}
