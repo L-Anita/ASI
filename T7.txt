@@ -1,0 +1,21 @@
+/*Coloque ambos códigos en un mismo archivo
+ya que van de la mano*/
+CHIP HalfAdder {
+    IN a, b;    
+    OUT sum, carry;  
+
+    PARTS:
+    And(a=a, b=b, out=carry);
+    Xor(a=a, b=b, out=sum);    
+}
+
+
+CHIP FullAdder {
+    IN a, b, c;  
+    OUT sum, carry;   
+
+    PARTS:
+    HalfAdder(a=a, b=b, sum=ab, carry=c1);
+    HalfAdder(a=c, b=ab, sum=sum, carry=c2);
+    Or(a=c1, b=c2, out=carry);
+}
