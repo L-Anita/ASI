@@ -1,0 +1,48 @@
+CHIP ALU {
+    IN  
+        x[16], y[16],  // 16-bit inputs        
+        zx, // zero the x input?
+        nx, // negate the x input?
+        zy, // zero the y input?
+        ny, // negate the y input?
+        f,  // compute (out = x + y) or (out = x & y)?
+        no; // negate the out output?
+    OUT 
+        out[16], // 16-bit output
+        zr,      // if (out == 0) equals 1, else 0
+        ng;      // if (out < 0)  equals 1, else 0
+
+    PARTS:
+    //Separe como las columnas de la tabla que vimos en clase c:
+    //Col 1
+    Mux16(a=x, b=false, sel=zx, out=x0);
+    
+    //Col 2
+    Not16(in=x0, out=Nx0);
+    Mux16(a=x0, b=Nx0, sel=nx, out=Nx);
+
+    //Col 3
+    Mux16(a=y, b=false, sel=zy, out=y0);
+
+    //Col 4 
+    Not16(in=y0, out=Ny0);
+    Mux16(a=y0, b=Ny0, sel=ny, out=Ny);
+
+    //Col 5
+    Add16(a=Nx, b=Ny, out=xPLUSy);
+    And16(a=Nx, b=Ny, out=xANDy);
+    Mux16(a=xANDy, b=xPLUSy, sel=f, out=fxy);
+
+    //Col 6, 7 y ng
+    Not16(in=fxy, out=Nfxy);
+    Mux16(a=fxy, b=Nfxy, sel=no, out=out,
+                         out[0..7]=zr1,
+                         out[8..15]=zr2,
+                         out[15]=ng);
+
+    //zr separado en 2 Or8 porque no hay de 16
+    Or8Way(in=zr1, out=zr0);
+    Or8Way(in=zr2, out=zr15);
+    Or(a=zr0, b=zr15, out=Nzr);
+    Not(in=Nzr, out=zr);
+}
