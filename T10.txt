@@ -1,0 +1,69 @@
+//Bit
+CHIP Bit {
+    IN in, load;
+    OUT out;
+
+    PARTS:
+    Mux(a=ff, b=in, sel=load, out=OMux);
+    DFF(in=OMux, out=out, out=ff);
+}
+
+//Register (8 bits)
+CHIP Register {
+    IN in[8], load;
+    OUT out[8];
+
+    PARTS:
+    Bit(in=in[0], load=load, out=out[0]);
+    Bit(in=in[1], load=load, out=out[1]);
+    Bit(in=in[2], load=load, out=out[2]);
+    Bit(in=in[3], load=load, out=out[3]);
+    Bit(in=in[4], load=load, out=out[4]);
+    Bit(in=in[5], load=load, out=out[5]);
+    Bit(in=in[6], load=load, out=out[6]);
+    Bit(in=in[7], load=load, out=out[7]);
+}
+
+//RAM8 (8 registers -> 16 bits)
+CHIP RAM8 {
+    IN in[16], load, address[3];
+    OUT out[16];
+
+    PARTS:
+    DMux8Way(in=load, sel=address,
+    a=l0, b=l1, c=l2, d=l3, e=l4, f=l5, g=l6, h=l7);
+
+    Register(in=in, load=l0, out=o0);
+    Register(in=in, load=l1, out=o1);
+    Register(in=in, load=l2, out=o2);
+    Register(in=in, load=l3, out=o3);
+    Register(in=in, load=l4, out=o4);
+    Register(in=in, load=l5, out=o5);
+    Register(in=in, load=l6, out=o6);
+    Register(in=in, load=l7, out=o7);
+
+    Mux8Way16(a=o0, b=o1, c=o2, d=o3, e=o4, f=o5, g=o6, h=o7,
+    sel=address, out=out);
+}
+
+//RAM64 (8 RAM8 -> 8 registers -> 16 bits)
+CHIP RAM64 {
+    IN in[16], load, address[6];
+    OUT out[16];
+
+    PARTS:
+    DMux8Way(in=load, sel=address[3..5],
+     a=l0, b=l1, c=l2, d=l3, e=l4, f=l5, g=l6, h=l7);
+
+    RAM8(in=in, load=l0, address=address[0..2], out=o0);
+    RAM8(in=in, load=l1, address=address[0..2], out=o1);
+    RAM8(in=in, load=l2, address=address[0..2], out=o2);
+    RAM8(in=in, load=l3, address=address[0..2], out=o3);
+    RAM8(in=in, load=l4, address=address[0..2], out=o4);
+    RAM8(in=in, load=l5, address=address[0..2], out=o5);
+    RAM8(in=in, load=l6, address=address[0..2], out=o6);
+    RAM8(in=in, load=l7, address=address[0..2], out=o7);
+
+    Mux8Way16(a=o0, b=o1, c=o2, d=o3, e=o4, f=o5, g=o6, h=o7,
+    sel=address[3..5], out=out);
+}
