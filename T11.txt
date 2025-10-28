@@ -1,0 +1,33 @@
+//Con varios Mux
+CHIP PC {
+    IN in[16], reset, load, inc;
+    OUT out[16];
+    
+    PARTS:
+    Inc16(in=inInc, out=IncO);
+    
+    Mux16(a=inInc, b=IncO, sel=inc, out=outInc);
+
+	Mux16(a=outInc, b=in, sel=load, out=outLoad);
+
+	Mux16(a=outLoad, b[0..15]=false, sel=reset, out=outReset);
+	
+	Register(in=outReset, load=true, out=out, out=inInc);
+}
+
+//Con un Mux8
+CHIP PC {
+    IN in[16], reset, load, inc;
+    OUT out[16];
+    
+    PARTS:
+    Register(in=MuxO, load=true, out=out, out=outRegister);
+
+    Inc16(in=outRegister, out=outRegInc);
+
+    Mux8Way16(a=outRegister, b=outRegInc, 
+    c=in, d=in, 
+    e=false, f= false, g=false, h=false,
+    sel[2]=reset, sel[1]= load, sel[0]=inc,
+    out=MuxO);
+}
